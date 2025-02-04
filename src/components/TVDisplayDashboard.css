@@ -1,0 +1,54 @@
+.dashboard-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1a1a, #000000);
+  color: white;
+  padding: 2rem;
+}
+
+.dashboard-title {
+  font-size: 3rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #fbbf24; /* Yellow color */
+}
+
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.category-card {
+  background: #2d2d2d;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid #444;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.category-title {
+  font-size: 2rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #fbbf24; /* Yellow color */
+}
+
+.item-card {
+  background: #3d3d3d;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  margin-bottom: 1rem;
+  transition: background 0.3s ease;
+}
+
+.item-card:hover {
+  background: #4d4d4d;
+}
+
+.no-items {
+  text-align: center;
+  color: #888;
+}
