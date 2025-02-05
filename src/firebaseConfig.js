@@ -1,16 +1,15 @@
-// src/firebaseConfig.js
 import { initializeApp } from "firebase/app";
 import { getDatabase } from "firebase/database";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAfNB_zl0vAjh1oyDa_hyNI3tIEYSgcZgc",
-  authDomain: "crossroadsmenu-4ae0b.firebaseapp.com",
-  databaseURL: "https://crossroadsmenu-4ae0b-default-rtdb.firebaseio.com",
-  projectId: "crossroadsmenu-4ae0b",
-  storageBucket: "crossroadsmenu-4ae0b.firebasestorage.app",
-  messagingSenderId: "348121090060",
-  appId: "1:348121090060:web:cbe795b8b26d9d7990c629",
-  measurementId: "G-4SSFPEYN2G"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
 };
 
 const app = initializeApp(firebaseConfig);
