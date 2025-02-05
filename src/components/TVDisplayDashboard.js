@@ -42,7 +42,8 @@ function TVDisplayDashboard() {
               {groupedItems[category] ? (
                 groupedItems[category].map((item, index) => (
                   <div key={index} className="item-card">
-                    {item.name}
+                    {item.imageUrl && <img src={item.imageUrl} alt={item.name} className="item-image" />}
+                    <span>{item.name}</span>
                   </div>
                 ))
               ) : (

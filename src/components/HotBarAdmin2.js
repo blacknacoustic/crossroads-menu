@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Button, Card, CardContent, TextField, Switch, MenuItem, Select, FormControl, InputLabel } from "@mui/material";
 import { Trash2 } from "lucide-react";
-import { db } from "../firebaseConfig";
+import { db, storage } from "../firebaseConfig"; // Make sure storage is imported
 import { ref, set, push, onValue, remove, update } from "firebase/database";
+import { ref as storageRef, uploadBytesResumable, getDownloadURL } from "firebase/storage"; // Firebase Storage imports
 
 const HotBarAdmin = () => {
   const [menuItems, setMenuItems] = useState([]);
   const [newItem, setNewItem] = useState("");
   const [category, setCategory] = useState("Misc"); // Default category
+  const [image, setImage] = useState(null); // Image state for file upload
 
   // Fetch data from Firebase on component mount
   useEffect(() => {
@@ -39,14 +41,54 @@ const HotBarAdmin = () => {
     if (newItem.trim() !== "") {
       const menuRef = ref(db, "menuItems");
       const newItemRef = push(menuRef);
-      set(newItemRef, { name: newItem, available: false, category })
+      
+      // If an image is uploaded, handle it
+      if (image) {
+        const uploadTask = uploadBytesResumable(storageRef(storage, `menuImages/${newItemRef.key}`), image);
+
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log("Upload is " + progress + "% done");
+          },
+          (error) => {
+            console.error("Error uploading image:", error);
+          },
+          () => {
+            // Get the download URL once the image is uploaded
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              // Save the item to the database along with the image URL
+              set(newItemRef, {
+                name: newItem,
+                available: false,
+                category,
+                imageUrl: downloadURL, // Store the image URL
+              }).then(() => {
+                setNewItem("");
+                setCategory("Misc"); // Reset category to default
+                setImage(null); // Clear the image state after upload
+              }).catch((error) => {
+                console.error("Error adding item: ", error);
+              });
+            });
+          }
+        );
+      } else {
+        // No image selected, just add item without image
+        set(newItemRef, {
+          name: newItem,
+          available: false,
+          category,
+        })
         .then(() => {
           setNewItem("");
-          setCategory("Misc"); // Reset category to default
+          setCategory("Misc");
         })
         .catch((error) => {
           console.error("Error adding item: ", error);
         });
+      }
     }
   };
 
@@ -86,6 +128,14 @@ const HotBarAdmin = () => {
             <MenuItem value="Misc">Misc</MenuItem>
           </Select>
         </FormControl>
+
+        {/* Image upload input */}
+        <input
+          type="file"
+          onChange={(e) => setImage(e.target.files[0])}
+          accept="image/*"
+          className="mr-2"
+        />
         <Button variant="contained" onClick={addNewItem}>
           Add
         </Button>
@@ -97,6 +147,7 @@ const HotBarAdmin = () => {
               <span className="text-lg font-medium flex-1 text-center">
                 {item.name} <span className="text-sm text-gray-500">({item.category})</span>
               </span>
+              {item.imageUrl && <img src={item.imageUrl} alt={item.name} className="w-12 h-12 object-cover ml-2" />}
               <Switch
                 checked={item.available}
                 onChange={() => toggleAvailability(index)}
