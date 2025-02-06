@@ -59,6 +59,26 @@ const HotBarAdmin = () => {
     }
   };
 
+  // Toggle availability of an item
+  const toggleAvailability = (index) => {
+    const item = menuItems[index];
+    const itemRef = ref(db, `menuItems/${item.id}`);
+    update(itemRef, { available: !item.available });
+  };
+
+  // Delete an item
+  const deleteItem = (index) => {
+    const item = menuItems[index];
+    const itemRef = ref(db, `menuItems/${item.id}`);
+    remove(itemRef)
+      .then(() => {
+        console.log("Item deleted");
+      })
+      .catch((error) => {
+        console.error("Error deleting item: ", error);
+      });
+  };
+
   return (
     <div className="p-4 max-w-md mx-auto">
       <h1 className="text-2xl font-bold mb-4 text-center">Hot Bar Admin</h1>
